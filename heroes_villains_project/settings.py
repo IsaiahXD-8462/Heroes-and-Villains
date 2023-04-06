@@ -123,3 +123,7 @@ try:
     from heroes_villains_project.local_settings import *
 except ImportError:
     raise ImportError("local setting not found")
+
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False
+}
