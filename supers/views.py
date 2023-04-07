@@ -13,11 +13,24 @@ def supers_list(request):
         supers = Super.objects.all()
         serializer = SuperSerializer(supers, many=True)
         
-        super_types_param = request.query_params.get('super_types')
+        super_types_param = request.query_params.get('type')
         sort_param = request.query_params.get('sort')
 
         if super_types_param:
-            supers = supers.filter(super_types__name=super_types_param)
+            supers = supers.filter(super_type__type=super_types_param)
+            serializer = SuperSerializer(supers, many=True)
+        else:
+            #super_serializer = SuperSerializer(supers, many=True)
+            #super_type_serializer = SuperTypesSerializer(super_types, many=True)
+            heroes = supers.filter(super_type__type='hero')
+            villains = supers.filter(super_type__type='villain')
+            Heroserializer = SuperSerializer(heroes, many=True)
+            Villainserializer = SuperSerializer(villains, many=True)
+            custom_response_dict = {
+            'heroes': Heroserializer.data,
+            'vilains': Villainserializer.data
+            }
+            return Response(custom_response_dict)
 
         if sort_param:
             super = supers.order_by(sort_param)
