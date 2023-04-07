@@ -10,11 +10,11 @@ from .models import Super
 def supers_list(request):
 
     if request.method == 'GET':
-        super_types_param = request.query_params.get('super_types')
-        sort_param = request.query_params.get('sort')
-
         supers = Super.objects.all()
         serializer = SuperSerializer(supers, many=True)
+        
+        super_types_param = request.query_params.get('super_types')
+        sort_param = request.query_params.get('sort')
 
         if super_types_param:
             supers = supers.filter(super_types__name=super_types_param)
@@ -22,7 +22,7 @@ def supers_list(request):
         if sort_param:
             super = supers.order_by(sort_param)
 
-        return Response('super_types_param')
+        return Response(serializer.data)
         
     elif request.method == 'POST':
         serializer = SuperSerializer(data=request.data)
@@ -30,20 +30,20 @@ def supers_list(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view(['GET'])
-def supers_and_super_types(request):
+#@api_view(['GET'])
+#def supers_and_super_types(request):
 
-    supers = Super.objects.all()
-    super_types = SuperTypes.objects.all()
+   # supers = Super.objects.all()
+   # super_types = SuperTypes.objects.all()
 
-    super_serializer = SuperSerializer(supers, many=True)
-    super_type_serializer = SuperTypesSerializer(super_types, many=True)
+    #super_serializer = SuperSerializer(supers, many=True)
+    #super_type_serializer = SuperTypesSerializer(super_types, many=True)
 
-    custom_response_dict = {
-        'supers': super_serializer.data
-        'super_types': super_type_serializer.data
-    }
-    return Response(custom_response_dict)
+    #custom_response_dict = {
+        #'supers': super_serializer.data
+        #'super_types': super_type_serializer.data
+    #}
+    #return Response(custom_response_dict)
 
 @api_view(['GET', 'PUT', 'DELETE'])   
 def super_detail(request, pk):
